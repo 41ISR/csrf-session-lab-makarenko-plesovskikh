@@ -9,11 +9,15 @@ const SignUp = () => {
         e.preventDefault()
         setError(undefined)
         
+        if (e.target.password.value !== e.target.password2.value){
+            setError("Пароли не совпадают")
+            return
+        }
+        
         const user = {
             email: e.target.email.value,
             username: e.target.username.value,
             password: e.target.password.value,
-            password2: e.target.password.value
         }
 
         try {
@@ -38,22 +42,54 @@ const SignUp = () => {
         }
     }
     return (
-        <div className="container">
-
-            <h1>🎮 Кликер Игра</h1>
-            <p className="subtitle">Демонстрация CSRF + CORS + Sessions</p>
-
-            <div className="forms">
-                <div className="form-card">
-                    <h2>Регистрация</h2>
-                    <form onSubmit={handleSubmit}>
-                        <input id="email" name="email" type="email" placeholder="Почта" required />
-                        <input id="password" name="password" type="password" placeholder="Пароль (мин. 6 символов)" required />
-                        {error && <p className="form-error">{error}</p>}
-                        <button type="submit">Зарегистрироваться</button>
-                    </form>
-                    <Link className="form-link" to={"/signin"}>Вход</Link>
+        <div id="auth-screen" className="screen active">
+            <div className="auth-container">
+                <h1 className="casino-title">🎲 Однорукий друг</h1>
+                <div className="auth-tabs">
+                    <Link to={"/login"} className="tab-btn">
+                        Вход
+                    </Link>
+                    <Link to={"/signup"} className="tab-btn active">
+                        Регистрация
+                    </Link>
                 </div>
+                <form onSubmit={handleSubmit} id="signup-form" className="auth-form">
+                    <div className="form-group">
+                        <label>Имя пользователя</label>
+                        <input
+                            type="text"
+                            placeholder="Придумайте имя"
+                            name="username"
+                            required />
+                    </div>
+                    <div className="form-group">
+                        <label>Email</label>
+                        <input
+                            type="email"
+                            placeholder="Введите email"
+                            name="email"
+                            required />
+                    </div>
+                    <div className="form-group">
+                        <label>Пароль</label>
+                        <input
+                            type="password"
+                            placeholder="Придумайте пароль"
+                            name="password"
+                            required />
+                    </div>
+                    <div className="form-group">
+                        <label>Подтвердите пароль</label>
+                        <input
+                            type="password"
+                            placeholder="Повторите пароль"
+                            name="password2"
+                            required />
+                    </div>
+                    <button type="submit" className="btn btn-primary">
+                        Создать аккаунт
+                    </button>
+                </form>
             </div>
         </div>
     )
