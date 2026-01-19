@@ -44,7 +44,7 @@ const csrfMiddleware = csrf({
 
 app.get("/auth/check", (req, res) => {
     console.log(req.session)
-    const escore = db.prepare("SELECT escore FROM users where id = ?").get(req.session.userId)
+    const escore = db.prepare("SELECT escore FROM users where id = ?").get(req.session.userId)?.escore || 0
     console.log(escore)
     if (req.session.userId) {
         return res.status(200).json({logged: true, user: {
@@ -115,14 +115,55 @@ app.post("/auth/logout", (req, res) => {
     })
 })
 
-app.post("/api/spin", csrfMiddleware, (req, res) => {
-    const { escore } = req.body
-    const updateEscore = db
-        .prepare("UPDATE users SET escore = ? WHERE id = ?")
-        .run(escore, req.session.userId)
+const PAYOUTS = {
+    '💯💯💯': 100,
+    '🎓🎓🎓': 50,
+    '🔥🔥🔥': 25,
+    '🧠🧠🧠': 15,
+    '📚📚📚': 10,
+    '✏️✏️✏️': 8,
+    '❌❌❌': 0,
+}
 
-    console.log(updateEscore)
-    res.status(200).json({message: "Значение е-баллов обновлено"})
+const SYMBOLS = ['📚', '✏️', '🧠', '🎓', '🔥', '💯', '❌']
+
+function getCombinationMultiplier(symbols) {
+    return PAYOUTS[symbols.join('')] || 0
+}
+
+app.post("/api/spin", csrfMiddleware, (req, res) => {
+    const { bet } = req.body
+
+    if (![10, 50, 100].includes(bet)) {
+        return res.status(400).json({ error: "Недопустимая ставка" })
+    }
+
+    try {
+        const user = db.prepare("SELECT escore FROM users WHERE id = ?").get(req.session.userId)
+        if (!user || user.escore < bet) {
+            return res.status(400).json({ error: "Недостаточно баллов" })
+        }
+
+        const resultSymbols = Array.from({ length: 3 }, () =>
+            SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)]
+        )
+
+        const multiplier = getCombinationMultiplier(resultSymbols)
+        const winAmount = multiplier * bet
+        const newBalance = user.escore - bet + winAmount
+
+        db.prepare("UPDATE users SET escore = ? WHERE id = ?").run(newBalance, req.session.userId)
+
+        res.json({
+            symbols: resultSymbols,
+            winAmount,
+            isWin: winAmount > 0,
+            newBalance,
+        })
+    } catch (err) {
+        console.error(err)
+        res.status(500).json({ error: "Ошибка сервера" })
+    }
 })
 
 app.get("/api/leaderboard", (req, res) =>{

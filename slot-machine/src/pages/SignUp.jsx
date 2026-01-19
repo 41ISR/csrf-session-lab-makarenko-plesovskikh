@@ -1,6 +1,8 @@
 
 import { useState } from "react"
 import {Link, useNavigate} from "react-router-dom"
+import Input from "../components/Input"
+import Button from "../components/Button"
 
 const SignUp = () => {
     const navigate = useNavigate()
@@ -21,7 +23,7 @@ const SignUp = () => {
         }
 
         try {
-            const res = await fetch("https://potential-cod-97rq6j9575v3955p-3000.app.github.dev/auth/signup", {
+            const res = await fetch("https://studious-doodle-97jv5r7qpqx5f7r6w-3000.app.github.dev/auth/signup", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -38,7 +40,7 @@ const SignUp = () => {
             navigate("/")
         } catch (error) {
             console.error(error)
-            setError(error.message)
+            setError("Ошибка регистрации. Проверь данные или попробуй другое имя")
         }
     }
     return (
@@ -56,7 +58,7 @@ const SignUp = () => {
                 <form onSubmit={handleSubmit} id="signup-form" className="auth-form">
                     <div className="form-group">
                         <label>Имя пользователя</label>
-                        <input
+                        <Input
                             type="text"
                             placeholder="Придумайте имя"
                             name="username"
@@ -64,7 +66,7 @@ const SignUp = () => {
                     </div>
                     <div className="form-group">
                         <label>Email</label>
-                        <input
+                        <Input
                             type="email"
                             placeholder="Введите email"
                             name="email"
@@ -72,7 +74,7 @@ const SignUp = () => {
                     </div>
                     <div className="form-group">
                         <label>Пароль</label>
-                        <input
+                        <Input
                             type="password"
                             placeholder="Придумайте пароль"
                             name="password"
@@ -80,15 +82,16 @@ const SignUp = () => {
                     </div>
                     <div className="form-group">
                         <label>Подтвердите пароль</label>
-                        <input
+                        <Input
                             type="password"
                             placeholder="Повторите пароль"
                             name="password2"
                             required />
                     </div>
-                    <button type="submit" className="btn btn-primary">
+                    {error && <p className="form-error">{error}</p>}
+                    <Button type="submit" className="btn btn-primary">
                         Создать аккаунт
-                    </button>
+                    </Button>
                 </form>
             </div>
         </div>

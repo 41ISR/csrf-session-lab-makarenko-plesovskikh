@@ -1,41 +1,47 @@
 import { useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import useAppStore from "../store/useAppStore"
+import { useAuthStore } from "../store/useAuthStore"
+import Player from "../components/Player"
+import Button from "../components/Button"
 
-const LeaderBoard = () =>{
-    const {leaderboard, setLeaderBoard} = useAppStore()
-    const updateleaderboard = async () =>{
-        try{
-            const res = await fetch("https://potential-cod-97rq6j9575v3955p-3000.app.github.dev//leaderboard")
-            if (!res.ok) throw new Error(res.error)
-            const data = await res.json()
-            setLeaderBoard(data)
-        } catch (err){
-            console.error(err)
-        }
-    }
+const LeaderBoard = () => {
+    const navigate = useNavigate()
+    const { leaderboard, setLeaderBoard } = useAppStore()
+    const { user } = useAuthStore()
 
     useEffect(() => {
-            updateleaderboard()
-            const interval = setInterval(() => {
-                updateleaderboard()
-            }, 5500)
-            return () => {clearInterval(interval)}
-        }, [])
-    return(
-     <div className="leaderboard">
-                <h2>🏆 Топ-10 игроков</h2>
-                    <ol>
-                        {leaderboard.sort((a, b) => b.clicks - a.clicks).map((el, i) =>(
-                        <li key={el.id}>
-                            <span className="rank">#{i + 1}</span>
-                            <span className="username">{el.email}</span>
-                            <span className="score">{el.clicks} кликов</span>
-                        </li> 
-                        ))}
-                    </ol>
-                </div>
-                )
+        fetch("https://studious-doodle-97jv5r7qpqx5f7r6w-3000.app.github.dev/api/leaderboard")
+            .then(r => r.json())
+            .then(setLeaderBoard)
+    }, [])
 
+    return (
+        <div id="leaderboard-screen" className="screen">
+            <div className="leaderboard-container">
+                <Button className="back-btn" onClick={() => navigate("/")}>← Назад к игре</Button>
+                <h1>🏆 Рейтинг лучших 🏆</h1>
+
+                <div className="leaderboard-table">
+                    <div className="leaderboard-header">
+                        <span>Место</span>
+                        <span>Студент</span>
+                        <span>E-Баллы</span>
+                    </div>
+
+                    {leaderboard.map((u, i) => (
+                        <Player
+                            key={u.id}
+                            place={i + 1}
+                            username={u.username}
+                            escore={u.escore}
+                            isMe={u.id === user.user.userId}
+                        />
+                    ))}
+                </div>
+            </div>
+        </div>
+    )
 }
 
 export default LeaderBoard

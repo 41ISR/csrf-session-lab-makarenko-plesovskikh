@@ -8,7 +8,7 @@ db.exec(`
         email TEXT UNIQUE NOT NULL,
         username TEXT UNIQUE NOT NULL,
         password TEXT NOT NULL,
-        escore INTEGER DEFAULT 0,
+        escore INTEGER DEFAULT 100,
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
     )
     `)

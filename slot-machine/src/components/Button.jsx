@@ -1,5 +1,7 @@
+import React from 'react'
+
 const Button = ({ children, onClick, className, ...rest }) => {
-    const combinedClassName = `основной-класс-кнопки ${className || ''}` // добавляем свой класс к существующему
+    const combinedClassName = `btn ${className || ''}`
 
     return (
         <button onClick={onClick} className={combinedClassName} {...rest}>

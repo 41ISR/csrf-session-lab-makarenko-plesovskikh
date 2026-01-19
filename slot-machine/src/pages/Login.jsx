@@ -1,5 +1,7 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
+import Input from "../components/Input"
+import Button from "../components/Button"
 
 const Login = () => {
     const navigate = useNavigate()
@@ -13,7 +15,7 @@ const Login = () => {
         }
 
         try {
-            const res = await fetch("https://potential-cod-97rq6j9575v3955p-3000.app.github.dev/auth/signin", {
+            const res = await fetch("https://studious-doodle-97jv5r7qpqx5f7r6w-3000.app.github.dev/auth/signin", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -32,7 +34,7 @@ const Login = () => {
 
         } catch (error) {
             console.error(error)
-            setError(error.message)
+            setError("Неверное имя пользователя или пароль")
         }
     }
 
@@ -48,22 +50,24 @@ const Login = () => {
                     Регистрация
                 </Link>
             </div>
-            <form id="login-form" className="auth-form active">
+            <form id="login-form" className="auth-form active" onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label>Имя пользователя</label>
-                    <input type="text" placeholder="Введите имя" required="" />
+                    <Input type="text" placeholder="Введите имя" name="username" required="" />
                 </div>
                 <div className="form-group">
                     <label>Пароль</label>
-                    <input
+                    <Input
                         type="password"
                         placeholder="Введите пароль"
+                        name="password"
                         required=""
                     />
                 </div>
-                <button type="submit" className="btn btn-primary">
+                {error && <p className="form-error">{error}</p>}
+                <Button type="submit" className="btn btn-primary">
                     Войти
-                </button>
+                </Button>
             </form>
         </div>
     </div>

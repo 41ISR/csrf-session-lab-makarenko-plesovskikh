@@ -4,7 +4,7 @@ export const useAuthStore = create((set, get) => ({
     user: undefined,
     checkAuth: async () => {
         try {
-            const res = await fetch("https://potential-cod-97rq6j9575v3955p-3000.app.github.dev/auth/check", {
+            const res = await fetch("https://studious-doodle-97jv5r7qpqx5f7r6w-3000.app.github.dev/auth/check", {
                 credentials: "include"
             })
 
@@ -25,7 +25,7 @@ export const useAuthStore = create((set, get) => ({
     csrfToken: undefined,
     getCsrfToken: async() => {
       try {
-            const res = await fetch("https://potential-cod-97rq6j9575v3955p-3000.app.github.dev/csrf-token", {
+            const res = await fetch("https://studious-doodle-97jv5r7qpqx5f7r6w-3000.app.github.dev/csrf-token", {
                 credentials: "include"
             })
 

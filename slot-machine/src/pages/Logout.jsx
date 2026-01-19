@@ -7,7 +7,8 @@ const Logout = () => {
     const navigate = useNavigate()
     useEffect(() => {
         const logUserOut = async () => {
-            await fetch("https://potential-cod-97rq6j9575v3955p-3000.app.github.dev/auth/logout", {
+            await fetch("https://studious-doodle-97jv5r7qpqx5f7r6w-3000.app.github.dev/auth/logout", {
+                method: "POST",
                 credentials: "include"
             })
             clearUser()
