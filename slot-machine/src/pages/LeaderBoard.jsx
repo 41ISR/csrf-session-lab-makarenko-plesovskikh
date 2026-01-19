@@ -35,7 +35,7 @@ const LeaderBoard = () => {
                             place={i + 1}
                             username={u.username}
                             escore={u.escore}
-                            isMe={u.id === user.id}
+                            isMe={u.id === user?.user?.userId}
                         />
                     ))}
                 </div>
