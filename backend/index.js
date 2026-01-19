@@ -127,9 +127,32 @@ const PAYOUTS = {
 
 const SYMBOLS = ['📚', '✏️', '🧠', '🎓', '🔥', '💯', '❌']
 
+const SYMBOLS_CHANCE = {
+    '📚':35,
+    '✏️': 25,
+    '🧠': 15,
+    '🎓': 10,
+    '🔥': 8,
+    '💯':5,
+     '❌':2,}
+
 function getCombinationMultiplier(symbols) {
     return PAYOUTS[symbols.join('')] || 0
 }
+
+function getRandomSymbols() {
+    const entries=Object.entries(SYMBOLS_CHANCE)
+    const total= entries.reduce((s, [, w]) => s+w, 0)
+
+    let r = Math.random()*total
+
+    for (const [sym, weight] of entries){
+        if (r < weight) return sym
+        r -=weight
+    }
+
+}
+
 
 app.post("/api/spin", csrfMiddleware, (req, res) => {
     const { bet } = req.body
@@ -144,9 +167,11 @@ app.post("/api/spin", csrfMiddleware, (req, res) => {
             return res.status(400).json({ error: "Недостаточно баллов" })
         }
 
-        const resultSymbols = Array.from({ length: 3 }, () =>
-            SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)]
-        )
+        const resultSymbols = Array.from({length: 3}, () => getRandomSymbols())
+    
+        // const resultSymbols = Array.from({ length: 3 }, () =>
+        //     SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)]
+        // )
 
         const multiplier = getCombinationMultiplier(resultSymbols)
         const winAmount = multiplier * bet
